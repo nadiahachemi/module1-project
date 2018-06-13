@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>essai gravité</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="subway-frotteur.css" />
+</head>
+<body>
+<div class="header">SUBWAY FROTEUR GAME</div>
+    <canvas id="canvas" height="800" width="800"></canvas>
+
+    <script>
+
+
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = 'black';
+        ctx.font = '18px serif';
+     
+
+   
+       
+       function drawLines(){
+               ctx.beginPath();
+        ctx.moveTo(0,2250);
+        ctx.lineTo(400,0);
+        ctx.lineTo(800,2250)
+        ctx.stroke();
+     }
+
+      function drawPaths(){
+               ctx.beginPath();
+        ctx.moveTo(0,800);
+        ctx.lineTo(400,0);
+        ctx.lineTo(800,800)
+        ctx.stroke();
+     }
+
+
+    drawPaths();
+    drawLines();
+
+    var frotteurimage = new Image();
+    frotteurimage.src="frotteur.png";
+
+     var frotteurArmy=[];
+
+    function Frotteur( x, y , hgt, wdt, path){
+        this.x= x;
+        this.y= y;
+        this.heigth= hgt;
+        this.width =wdt;
+        this.path = path;
+    };
+
+    Frotteur.prototype.drawFrot= function (){
+        if (this.path === 1){
+            this.y += 1.5;
+            this.x-=-0.325;
+            this.heigth += 1.2;
+            this.width += 0.6;
+        } else if (this.path ===2){
+            this.y += 1.5;
+            this.x-=-0.325;
+            this.heigth += 1.2;
+            this.width += 0.6;   
+        }else {
+            this.y += 1.5;
+            this.x-=+0.325;
+            this.heigth += 1.2;
+            this.width += 0.6;
+        }
+        var frot = this;
+
+            ctx.drawImage(frotteurimage, frot.x, frot.y, frot.width, frot.heigth);
+
+    };
+    
+   
+setInterval(function() {
+    ctx.clearRect(0, 0, 800, 800);
+    drawPaths();
+    drawLines();
+    frotteurArmy.forEach( function drawFrot(unfrot){
+        unfrot.drawFrot();
+    });
+}, 1000/60);
+
+
+
+    setInterval(function(){
+        var rdmNbm= (Math.floor(Math.random()*3));
+        if (rdmNbm===0){
+            frotteurArmy.push(new Frotteur (390,-20, 0, 20, 1))
+            console.log("PATH ONE ");
+        }else if(rdmNbm===1){
+            frotteurArmy.push(new Frotteur (390,-20, 0, 20, 2))
+            console.log("PATH TWO ");
+        }else {
+            frotteurArmy.push(new Frotteur (390,-20, 0, 20, 3))
+            console.log(new Frotteur);
+            console.log("PATH TREE ");
+     }   
+
+    },2000);
+
+
+    </script>
+</body>
+</html>
