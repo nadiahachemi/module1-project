@@ -9,6 +9,7 @@
 </head>
 <body>
 <div class="header">SUBWAY FROTEUR GAME</div>
+<button>PLAY</button>
     <canvas id="canvas" height="800" width="800"></canvas>
 
     <script>
@@ -40,10 +41,31 @@
         ctx.lineTo(800,800)
         ctx.stroke();
         };
-     
-     
+
+
+        function drawWin (){
+            ctx.drawImage(winning,0,0,800,800);
+        }
+
+
+     var winning={
+         height: 800,
+         width:800,
+     }
+     var winning = new Image; 
+     winning.src="./pictures/winning.png"
+
+     var timerimage = new Image();
+     timerimage.src ="./pictures/timer.png";
+
       var frotteurimage = new Image();
       frotteurimage.src="./pictures/frotteur.png";
+
+      var frotteurimageOpen = new Image();
+      frotteurimageOpen.src="./pictures/frotteur-open.png";
+
+     var girlimage= new Image ();
+     girlimage.src="./pictures/girl-attack.png"
 
       var girlimage=new Image();
       girlimage.src="./pictures/girl-running-rigth.png";
@@ -60,64 +82,68 @@
         else {
             currentGirl = girlimage;
         }
-    }, 250)
+    }, 200)
 
       var frotteurArmy=[];
 
-      function Frotteur( x, y , hgt, wdt, path, speedx, speedy){
+      function Frotteur( x, y , hgt, wdt, path){
         this.x= x;
         this.y= y;
-        this.speedx = speedx;
-        this.speedy = speedy;
         this.heigth= hgt;
         this.width =wdt;
         this.path = path;
+        this.manteauOuvert = false;
 
         };
 
     Frotteur.prototype.drawFrot= function (){
-      if (this.path ===1 && this.y< 100){
-            this.y += 0.5;
+        console.log(this.y)
+        if (this.y >800 && this.manteauOuvert === false){
+            this.heigth -=200;
+            this.width -=200;
+            this.x -= 800;
+        }else if (this.path ===1 && this.y< 100){
+            this.y += 0.8;
             this.x -= 0.3;
             this.heigth += 0.3;
             this.width += 0.25;
       }else if (this.path ===1 && this.y< 200){
             this.y += 1;
-            this.x -= 0.7;
+            this.x -= 0.8;
             this.heigth += 0.7;
             this.width += 0.5;      
        }else if (this.path ===1 && this.y< 300){
             this.y += 1.5;
-            this.x -= 1.2;
-            this.heigth += 1.2;
+            this.x -= 1.4;
+            this.heigth += 2;
             this.width += 1;
        }else if (this.path ===1 && this.y> 300){
             this.y += 5;
-            this.x -= 1.7;
-            this.heigth += 1.5;
-            this.width += 1;   
+            this.x -= 4;
+            this.heigth += 3;
+            this.width += 0.8;   
         } else if (this.path ===2 && this.y< 100){
-            this.y += 0.5;
+            this.y += 0.8;
             this.x -= 0.125;
-            this.heigth += 0.3;
+            this.heigth += 0.7;
             this.width += 0.25;
       }else if (this.path ===2 && this.y< 200){
             this.y += 1;
             this.x -= 0.23;
-            this.heigth += 0.7;
+            this.heigth += 1.2;
             this.width += 0.5;      
        }else if (this.path ===2 && this.y< 300){
             this.y += 1.5;
             this.x -= 0.3;
-            this.heigth += 1.2;
+            this.heigth += 3;
             this.width += 1;
        }else if (this.path ===2 && this.y> 300){
             this.y += 5;
             this.x -= 0.4;
-            this.heigth += 1.5;
+            this.heigth += 4;
             this.width += 1;    
         }else if (this.path ===3 && this.y< 100){
-            this.y += 0.5;
+            this.y += 0.8;
             this.x += 0.1;
             this.heigth += 0.3;
             this.width += 0.25;
@@ -134,77 +160,109 @@
        }else if (this.path ===3 && this.y> 300){
             this.y += 5;
             this.x += 1;
-            this.heigth += 1.3;
+            this.heigth += 3;
             this.width += 1; 
        }
         var frot = this;
+            if (frot.manteauOuvert === false){
+                ctx.drawImage(frotteurimage, frot.x, frot.y, frot.width, frot.heigth);
+            }else if (frot.manteauOuvert === true) {
+                ctx.drawImage(frotteurimageOpen, frot.x, frot.y, 250, 350);   
+            }
 
-            ctx.drawImage(frotteurimage, frot.x, frot.y, frot.width, frot.heigth);
     };  
-            
+      
  function boxCollision (x1, y1, width1, height1, x2, y2, width2, height2) {
         return x1 < x2 + width2 &&
         x1 + width1 > x2 &&
         y1 < y2 + height2 &&
         height1 + y1 > y2
         }
-        
-   
     
+
     
 
    
-setInterval(function() {
+var game = setInterval(function() {
     ctx.clearRect(0, 0, 800, 800);
+    timer.width+=0.1;
     drawPaths();
     drawLines();
-    frotteurArmy.forEach( function(unfrot){
-        unfrot.drawFrot();
-    });
-
-
+    drawTimer(timer);
     ctx.fillText("Girl_x: " + girl.x2, 500,40);
     ctx.fillText("Girl_y: " + girl.y2, 500,60);
     draw(girl);
-
-
+    frotteurArmy.forEach( function(unfrot){
+        unfrot.drawFrot();
+    });
     frotteurArmy.forEach( function( unfrot ){
-        var isCollision = boxCollision (girl.x2, girl.y2, 200, 350, unfrot.x, unfrot.y, unfrot.width, unfrot.heigth);
+        var isCollision = boxCollision (girl.x2, girl.y2+100, 100, 200, unfrot.x, unfrot.y, unfrot.width, unfrot.heigth);
         if (isCollision) {
-        console.log("froté");
+            ctx.clearRect(0,0,800,800);
+            unfrot.manteauOuvert = true;
+            console.log("collision", unfrot);
+            
+            clearInterval(game);
+            // window.alert("he touched you");
+            drawLines();
+            drawPaths();
+            unfrot.drawFrot();
+            draw(girl);
         }
-    })
+    });
+    
+    
+    if (timer.width>150){
+        // window.alert("YOU WON!!!");   
+        clearInterval(game)
+        ctx.clearRect(0,0,800,800);
+        drawWin();
+    }
 },1000/60);
 
 
-
     setInterval(function(){
+        timer.width+=2;
         var rdmNbm= (Math.floor(Math.random()*3));
         if (rdmNbm===0){
             frotteurArmy.push(new Frotteur (360,-20, 0, 20, 1))
-            console.log("PATH ONE");
         }else if(rdmNbm===1){
             frotteurArmy.push(new Frotteur (390,-20, 0, 20, 2))
-            console.log("PATH TWO");
         }else {
             frotteurArmy.push(new Frotteur (420,-20, 0, 20, 3))
-            console.log(new Frotteur);
-            console.log("PATH TREE");
      }   
+    console.log(frotteurArmy);
+    },2000);
 
-    },2500);
+   
+ //timer.prototype.timeplus = function (){setInterval(function (){
+   //     this.width +=2;
+    //}, 1000)};
+
+var timer ={
+    x:5,
+    y:10,
+    heigth:15,
+    width:2,
+    
+    };
 
 
 var girl ={
-  x2: 300,
+  x2: 320,
   y2: 500,
   heigth2: 350,
   width2:200,
-  moveLeft:  function() {if (this.x2 ===0){this.x2 ===0}else{ this.x2  -= 300} },
-  moveRight: function() {if (this.x2 ===600){this.x2 ===600}else{ this.x2  += 300} },
+  moveLeft:  function() {if (this.x2 ===20){this.x2 ===20}else{ this.x2  -= 300} },
+  moveRight: function() {if (this.x2 ==620){this.x2 ===620}else{ this.x2  += 300} },
+  //attack: function () {girlimage.src="../game project/pictures/girl-attack.png"},
+ // disAttack:function () {girlimage.src="../game project/pictures/girl-running-rigth.png"},
 };
 
-
+function drawTimer(timer) {
+      ctx.drawImage(timerimage, timer.x, timer.y, timer.width, timer.heigth);
+};
+ 
 function draw(girl) {
      ctx.drawImage(currentGirl, girl.x2, girl.y2, 200, 350); 
 };
@@ -215,6 +273,7 @@ document.onkeydown = function(e) {
   switch (e.keyCode) {
     case 37: girl.moveLeft();  console.log('left',  girl); break;
     case 39: girl.moveRight(); console.log('right', girl); break;
+   // case 38: {setInterval(function() {girl.attack()}, 1000/10)} ; console.log('attack');break;
   }
 };
 
