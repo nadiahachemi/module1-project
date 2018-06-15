@@ -8,9 +8,16 @@
     <link rel="stylesheet" type="text/css" media="screen" href="./src/subway-frotteur.css" />
 </head>
 <body>
-<div class="header">SUBWAY FROTEUR GAME</div>
-<button>PLAY</button>
-    <canvas id="canvas" height="800" width="800"></canvas>
+    
+    
+       <div id= "host"> <img src="./pictures/hosting-img.png" height="800" width="800"></div>
+       <canvas id= "canvas" height="800" width="800"></canvas>
+       <audio id="punch" src="./tralala_1.mp3" autoplay>
+        <p>If you are reading this, it is because your browser does not support the audio element.     </p>
+        <embed src="./tralala_1.mp3" width="180" height="90" hidden="true" />
+    </audio>
+    
+   
 
     <script>
 
@@ -20,6 +27,8 @@
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = 'black';
         ctx.font = '18px serif';
+
+        
      
 
    
@@ -29,7 +38,7 @@
         ctx.moveTo(0,2250);
         ctx.lineTo(388,0);
         ctx.moveTo(412, 0);
-        ctx.lineTo(800,2250)
+        ctx.lineTo(800,2250);
         ctx.stroke();
         };
 
@@ -37,8 +46,8 @@
                ctx.beginPath();
         ctx.moveTo(0,800);
         ctx.lineTo(360,0);
-        ctx.moveTo(440, 0)
-        ctx.lineTo(800,800)
+        ctx.moveTo(440, 0);
+        ctx.lineTo(800,800);
         ctx.stroke();
         };
 
@@ -47,11 +56,20 @@
             ctx.drawImage(winning,0,0,800,800);
         }
 
+        function drawHost (){
+            ctx.drawImage(hostPage,0,0,800,800);
+        }
+
 
      var winning={
          height: 800,
          width:800,
      }
+
+    
+    
+
+    
      var winning = new Image; 
      winning.src="./pictures/winning.png"
 
@@ -114,14 +132,14 @@
             this.width += 0.5;      
        }else if (this.path ===1 && this.y< 300){
             this.y += 1.5;
-            this.x -= 1.4;
+            this.x -= 2;
             this.heigth += 2;
             this.width += 1;
        }else if (this.path ===1 && this.y> 300){
-            this.y += 5;
+            this.y += 7;
             this.x -= 4;
             this.heigth += 3;
-            this.width += 0.8;   
+           this.width += 0.8;   
         } else if (this.path ===2 && this.y< 100){
             this.y += 0.8;
             this.x -= 0.125;
@@ -135,39 +153,39 @@
        }else if (this.path ===2 && this.y< 300){
             this.y += 1.5;
             this.x -= 0.3;
-            this.heigth += 3;
+            this.heigth += 1.2;
             this.width += 1;
        }else if (this.path ===2 && this.y> 300){
-            this.y += 5;
+            this.y += 9;
             this.x -= 0.4;
             this.heigth += 4;
-            this.width += 1;    
+           this.width += 1;    
         }else if (this.path ===3 && this.y< 100){
             this.y += 0.8;
             this.x += 0.1;
             this.heigth += 0.3;
-            this.width += 0.25;
+            this.width += 0.3;
       }else if (this.path ===3 && this.y< 200){
             this.y += 1;
             this.x += 0.3;
             this.heigth += 0.7;
-            this.width += 0.5;      
+            this.width += 0.7;      
        }else if (this.path ===3 && this.y< 300){
             this.y += 1.5;
             this.x += 0.5;
             this.heigth += 1.2;
-            this.width += 1;
+            this.width += 1.2;
        }else if (this.path ===3 && this.y> 300){
-            this.y += 5;
-            this.x += 1;
+            this.y += 7;
+            this.x += 2;
             this.heigth += 3;
-            this.width += 1; 
+           this.width += 1; 
        }
         var frot = this;
             if (frot.manteauOuvert === false){
                 ctx.drawImage(frotteurimage, frot.x, frot.y, frot.width, frot.heigth);
             }else if (frot.manteauOuvert === true) {
-                ctx.drawImage(frotteurimageOpen, frot.x, frot.y, 250, 350);   
+                ctx.drawImage(frotteurimageOpen, frot.x, 300, 250, 350);   
             }
 
     };  
@@ -180,14 +198,13 @@
         }
     
 
-    
-
-   
-var game = setInterval(function() {
+  
+document.getElementById('host').onclick= function ()
+{  document.getElementById('host').style.visibility = "hidden";
+  var game = setInterval(function() {
     ctx.clearRect(0, 0, 800, 800);
     timer.width+=0.1;
-    drawPaths();
-    drawLines();
+    drawTiming();
     drawTimer(timer);
     ctx.fillText("Girl_x: " + girl.x2, 500,40);
     ctx.fillText("Girl_y: " + girl.y2, 500,60);
@@ -198,30 +215,31 @@ var game = setInterval(function() {
     frotteurArmy.forEach( function( unfrot ){
         var isCollision = boxCollision (girl.x2, girl.y2+100, 100, 200, unfrot.x, unfrot.y, unfrot.width, unfrot.heigth);
         if (isCollision) {
+            var audio = document.querySelector("audio");
+            audio.play();
             ctx.clearRect(0,0,800,800);
             unfrot.manteauOuvert = true;
             console.log("collision", unfrot);
             
             clearInterval(game);
             // window.alert("he touched you");
-            drawLines();
-            drawPaths();
+            
             unfrot.drawFrot();
             draw(girl);
         }
     });
     
     
-    if (timer.width>150){
+
+    if (timer.width>200){
         // window.alert("YOU WON!!!");   
         clearInterval(game)
         ctx.clearRect(0,0,800,800);
         drawWin();
     }
-},1000/60);
+},1000/60)
 
-
-    setInterval(function(){
+setInterval(function(){
         timer.width+=2;
         var rdmNbm= (Math.floor(Math.random()*3));
         if (rdmNbm===0){
@@ -234,6 +252,9 @@ var game = setInterval(function() {
     console.log(frotteurArmy);
     },2000);
 
+};
+
+    
    
  //timer.prototype.timeplus = function (){setInterval(function (){
    //     this.width +=2;
@@ -241,7 +262,7 @@ var game = setInterval(function() {
 
 var timer ={
     x:5,
-    y:10,
+    y:8,
     heigth:15,
     width:2,
     
@@ -258,6 +279,21 @@ var girl ={
   //attack: function () {girlimage.src="../game project/pictures/girl-attack.png"},
  // disAttack:function () {girlimage.src="../game project/pictures/girl-running-rigth.png"},
 };
+
+function drawTiming (){
+    ctx.beginPath();
+    ctx.moveTo(5,10);
+    ctx.lineTo(200,10);
+    ctx.moveTo(5,22);
+    ctx.lineTo(200,22);
+    ctx.moveTo(5,10);
+    ctx.lineTo(5, 20);
+    ctx.moveTo(200,10);
+    ctx.lineTo(200, 22);
+    ctx.stroke();
+}
+
+
 
 function drawTimer(timer) {
       ctx.drawImage(timerimage, timer.x, timer.y, timer.width, timer.heigth);
